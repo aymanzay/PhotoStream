@@ -1,0 +1,265 @@
+<!-- Usability Project 1: Ashley Kim, Ayman Zeine, Romeo Bahoumda -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>PhotoStream</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="config.js"></script>
+        <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <link rel="stylesheet" href="styles.css"> 
+        <link rel="script" href="scripts.js">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        
+        <div class= "topPanel" style="clear: both">
+            <h1 class= "title" style="float: left">PHOTO  STREAM<br></h1>
+        </div>
+
+        <div>
+            <h2><br></h2>
+            <div class="wrapper">
+                <button type="button" id="upload" class="btn btn-info btn-lg btn-block" style="float: center;" data-toggle="modal" data-target="#myModal">Upload</button>
+            </div>
+            <br>
+
+             <!-- Upload Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+                
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" onclick="resetUpload()">&times;</button>
+                            <h4 class="modal-title">Upload a Photo</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Pick a photo to upload.</p>
+                                <form id= "uform" name="uploader" enctype="multipart/form-data">
+                                    <input name="fupload" type="file" id="imgInp" />
+                                    <img id="imagePreview" src="#" alt="" />
+                                    <p><label for="description"><br>Enter a Description: </label>
+                                    <textarea rows="3" cols="50" id="description" name="description"></textarea></p>
+                                    <input id="uploadButton" type="btn btn-primary btn-lg btn-block" value="Upload Photo">
+                                </form>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetUpload()">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search and Filter Gallery -->
+            <div class="search">
+                <div class="row">    
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <div class="input-group">
+                            <div class="input-group-btn search-panel">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <span id="search_concept">Filter by</span> <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                <li><a href="#contains">Date (Old to New)</a></li>
+                                <li><a href="#its_equal">Date (New to Old)</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#all">All</a></li>
+                                </ul>
+                            </div>
+                            <input type="hidden" name="search_param" value="all" id="search_param">         
+                            <input type="text" class="form-control" name="x" placeholder="Search term...">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="gallerySection">
+                <a target="_blank"></a>
+            </div>
+            
+            <div class="gallery"></div>
+            
+            <!-- The Viewer Modal -->
+            <div id="photoModal" class="modalp">
+              <span class="closeP">&times;</span>
+                <img id="image">
+              <img class="modal-contentp" id="img01">
+              <div id="caption"></div>
+                <button type="button" class="btn btn-primary btn-lg btn-block" id="editButton" onclick="updatePhoto()" style="float: center;">Edit</button>
+                <button type="button" class="btn btn-danger btn-lg btn-block" id="deleteButton" onclick="deletePhoto('img01')">Delete</button>
+                <p hidden id="parag">
+                    <label for="newDescription"><br>Enter a New Description: </label>
+                    <textarea rows="3" cols="50" id="nDescription"></textarea>
+                    <button type="button" class="btn btn-success btn-lg btn-block" id="updateButton" style="float: center;">Update</button>
+                </p>
+                <!--</div>-->
+            </div>
+            
+            <script type="text/javascript">
+                function resetUpload() {
+                    document.getElementById("uform").reset();
+                }
+                
+                function readURL(input) {
+                    if (input.files && input.files[0]) {
+                        var reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            $('#imagePreview').attr('src', e.target.result);
+                        }
+
+                        reader.readAsDataURL(input.files[0]);
+                    }
+                }
+
+                $("#imgInp").change(function(){
+                    readURL(this);
+                });
+
+                // verification for the file
+                $(':file').on('change', function() 
+                {
+                    var file = this.files[0];
+                    if (file.size > 10485760)
+                    {
+                        alert('Max upload size is 10 MB.');
+                    }
+                });
+
+                $('#uploadButton').on('click', function() 
+                {
+                    // for data, we want to submit the photo and the description
+                    var photoFormData = new FormData(document.forms['uploader']);
+                    $.ajax({
+                        url: $path_to_backend + 'uploadPhoto.php',
+                        type: 'POST',
+                        data: photoFormData,
+
+                        // some flags for jQuery
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+
+                        // Custom XMLHttpRequest
+                        xhr: function() {
+                            var myXhr = $.ajaxSettings.xhr();
+                            if (myXhr.upload) {
+                                // For handling the progress of the upload
+                                myXhr.upload.addEventListener('progress', function(e) {
+                                    if (e.lengthComputable) {
+                                        $('progress').attr({
+                                            value: e.loaded,
+                                            max: e.total,
+                                        });
+                                    }
+                                    alert("success");
+                                } , false);
+                            }
+                            return myXhr;
+                        }
+                    });
+                });
+                    
+                function fetchPhotos()
+                    {
+                        // get the dive where the images should go
+                        var $tn_div = $(".gallerySection");
+                        // just in case there's anything still in the thumbnails div, clear it out
+                        $tn_div.empty();
+
+                        // retrieve images from the database
+                        $endpoint = $path_to_backend + 'getPhotos.php';
+                        $.getJSON($endpoint, function(data)
+                        {
+                            jQuery.each(data, function(key, val)
+                            {
+                                $(".gallery").append("")
+                                // append the images to the div, and make them clickable for details
+                                $("<img />")
+                                    .attr("src", $path_to_backend + val.tn_src)
+                                    .attr("id", val.id).appendTo($tn_div)
+                                    .attr("class", "tn")
+                                    .attr("onclick", "openModal(this.id)")
+                                    .wrap('<div class= "gallery"></div>');
+                                    //.wrap('<a href="viewPhoto.html?id=' + val.id + '"></a>');
+                            
+                            });
+                        });
+                    };
+                    
+                    function loadPhoto(photoId){
+                        let $endpoint = $path_to_backend + 'viewPhoto.php?id=' + photoId;
+
+                        $.getJSON($endpoint, function(data)
+                        {
+                            let src = data[0].src;
+                            description = data[0].description;
+                            $("#image").attr("src", $path_to_backend + src);
+                            $("#caption").html(description);
+                        });
+                    }
+
+                    $(document).ready(fetchPhotos());
+
+                
+                function deletePhoto(img_id){
+                    if (confirm("Are you sure you want to delete this photo?")) {
+                        let $endpoint = $path_to_backend + 'deletePhoto.php';
+
+                        $.post($endpoint, {id: img_id},function(data){
+                            alert(data);
+                            location.href = "index.html";
+                        });
+                    }
+                }
+                
+                function openModal(clicked_id){
+                    photoModal.style.display = "initial";
+                    loadPhoto(clicked_id);
+                    $('.search').hide();
+                    var modal = document.getElementById('photoModal');
+                    var modalImg = document.getElementById("img01");
+                    modalImg.id=clicked_id;
+                    modal.style.display = "block";
+                    modalImg.src = document.getElementById('image');
+                    
+                    document.getElementById("deleteButton").onclick = function() {deletePhoto(clicked_id)};
+                    document.getElementById("editButton").onclick = function() {updatePhoto(clicked_id)};
+                }
+
+                    // Get the <span> element that closes the modal
+                    var spanP = document.getElementsByClassName("closeP")[0];
+
+                    // When the user clicks on <span> (x), close the modal
+                    spanP.onclick = function() { 
+                        photoModal.style.display = "none";
+                        $('.search').show();
+                    }
+                    
+                    function updatePhoto(img_id){
+                        $('.modalp').children("p").show();
+                    
+                        $(function() {
+                            $("#updateButton").click( function()
+                            {
+                                let $endpoint = $path_to_backend + 'updatePhoto.php';
+                                let newDescription = $("#nDescription").val();
+                                $.post($endpoint, {id: img_id, description: newDescription}, function(data){
+                                    alert(data);
+                                    location.reload();
+                                });
+                            });
+                        });
+                    }
+            </script>
+            
+        </div>
+    </body>
+</html>

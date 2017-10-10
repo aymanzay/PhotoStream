@@ -1,0 +1,159 @@
+body {
+    max-width: 960px;
+    margin: 0px auto;
+}
+
+.topPanel{
+    width: 100%;
+    height: 120px;
+    background-color: paleturquoise;
+}
+
+h1.title {
+    color: #181244;
+    font-family: BEBAS;
+    font-size: 65px;
+    letter-spacing: 6px;
+}
+
+h2{
+    font-family: Arial Narrow;
+    font-size: 30px;
+}
+.search {
+    align-content: left;
+}
+
+.wrapper {
+    text-align: center;
+}
+
+.button {
+    position: absolute;
+    top: 50%;
+}
+
+img{
+    width: 100%;
+    height: 200px;
+}
+
+div.gallery {
+    margin: 15px;
+    border: 5px solid #ccc;
+    float: left;
+    width: 180px;
+}
+
+div.gallery:hover {
+    border: 5px solid #777;
+}
+
+div.desc {
+    padding: 15px;
+    text-align: center;
+}
+
+#imagePreview{
+    width: 100%;
+    height: 100%;
+}
+
+/* The Modal (background) */
+.modalp {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+
+/* Modal Content (image) */
+.modal-contentp {
+    margin: 0;
+    width: 0;
+    height: 0;
+}
+
+.modal-contentp #label {
+    color: #fff;
+}
+
+/* Caption of Modal Image */
+#caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 50px;
+}
+
+/* Add Animation */
+.modal-content, #caption {    
+    -webkit-animation-name: zoom;
+    -webkit-animation-duration: 0.6s;
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+
+@-webkit-keyframes zoom {
+    from {-webkit-transform:scale(0)} 
+    to {-webkit-transform:scale(1)}
+}
+
+@keyframes zoom {
+    from {transform:scale(0)} 
+    to {transform:scale(1)}
+}
+
+/* The Close Button */
+.closeP {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.closeP:hover,
+.closeP:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 100% Image Width on Smaller Screens */
+@media only screen and (max-width: 700px){
+    .modal-content {
+        width: 100%;
+    }
+}
+
+#image{
+    width: 500px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.btn btn-primary btn-lg{
+    margin: auto;
+    display: block;
+    float:center;
+}
+
+textarea.newDesc{
+    margin-left: auto;
+    margin-right: auto;
+}
